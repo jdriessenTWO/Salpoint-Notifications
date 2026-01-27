@@ -1,0 +1,69 @@
+<p><img src="blob:https://preprod.iga.identity.healthnz.govt.nz/615f488d-5dad-4c2b-84ec-53b119e23437"></p>
+<div style="width: 902px;">
+<p>Kia ora,</p>
+<p>The end date for #if (${identity.preferredName}) ${identity.preferredName}#end #if (${identity.lastname}) ${identity.lastname}#end is currently #if (${identity.endDate}) ${identity.endDate}#end. Access to all Health NZ IT systems will be removed at midnight on the day following #if (${identity.endDate}) ${identity.endDate}#end.</p>
+
+#set($NermEndDateUrl="https://healthnz.nonemployee.com/neprofile_dashboard/workflows/1b57f633-fcd7-4b62-bfc0-75d98865f721/workflow_sessions/new?pid=" + $nermId)
+
+<p>If this end date is incorrect, please update it on <strong><a href=$NermEndDateUrl target="_blank" rel="noopener noreferrer">[NERM update end date]</a></strong>. A guide to updating an end date and offboarding can be found at: <strong>[Kapehu knowledge article link]</strong>.</p>
+<ul>
+<li>HR and Payroll are informed, if required. The national process is set out on askHR's resignation page.</li>
+<li>Return of IT devices and access cards has been requested, if required.</li>
+<li>The national request can be raised on Kapehu. Select your district in "Services by District" for your local request.</li>
+</ul>
+<p>Full details for #if (${identity.firstname}) ${identity.firstname}#end, provided to ensure correct identification of the person:</p>
+<table style="width: 69.1796%; border-collapse: collapse; border: 0.5px solid black; height: 434.4px;">
+<thead>
+<tr>
+<th style="width: 37.3926%; text-align: left; border: 0.5px solid black;">Field</th>
+<th style="width: 62.6075%; text-align: left; border: 0.5px solid black;">Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>First Name</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.firstname}) ${identity.firstname}#end</td>
+</tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>Preferred name</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.preferredName}) ${identity.preferredName}#end</td>
+</tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>Last Name</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.lastname}) ${identity.lastname}#end</td>
+</tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>District</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.district}) ${identity.district}#end</td>
+</tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>Entity</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.entity}) ${identity.entity}#end</td>
+</tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>Department</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.department}) ${identity.department}#end</td>
+</tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>Job Title</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.jobTitle}) ${identity.jobTitle}#end</td>
+</tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>Primary location</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.location}) ${identity.location}#end</td>
+</tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>Employee Type</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.employeeType}) ${identity.employeeType}#end</td>
+</tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>eMail</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.email}) ${identity.email}#end</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+</div>
+<p>If you require and help go to&nbsp;<a href="https://support.tewhatuora.govt.nz/esc?id=emp_taxonomy_topic&amp;topic_id=58b3b0d91b450610d6102069b04bcb20" target="_blank" rel="noopener noreferrer">Kāpehu (ServiceNow)</a> and raise a support request on your local Service Desk.</p>
+<p><span lang="EN-NZ" style="font-size: 11.0pt; line-height: 107%; font-family: Poppins; mso-fareast-font-family: 'Times New Roman'; mso-ansi-language: EN-NZ; mso-fareast-language: EN-US; mso-bidi-language: AR-SA;">Ngā mihi,&nbsp;<br>IT Service Desk&nbsp;<br>Service Experience&nbsp;<br>Digital Services</span></p>
+<p><img src="blob:https://preprod.iga.identity.healthnz.govt.nz/43551433-583c-42f0-8041-76a37b5bf15e"></p>
