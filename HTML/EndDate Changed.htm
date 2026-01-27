@@ -1,12 +1,12 @@
 <p><img src="blob:https://preprod.iga.identity.healthnz.govt.nz/615f488d-5dad-4c2b-84ec-53b119e23437"></p>
 <div style="width: 902px;">
 <p>Kia ora,</p>
-<p>The end date for #if (${identity.preferredName}) ${identity.preferredName}#end #if (${identity.lastname}) ${identity.lastname}#end has been updated by <strong>[Requestor email address]</strong> is currently #if (${identity.endDate}) ${identity.endDate}#end. Access to all Health NZ IT systems will be removed at midnight on the day following #if (${identity.endDate}) ${identity.endDate}#end.</p>
+<p>The end date for #if (${identity.preferredName}) ${identity.preferredName}#end #if (${identity.lastname}) ${identity.lastname}#end has been updated to currently #if (${identity.endDate}) ${identity.endDate}#end. Access to all Health NZ IT systems will be removed at midnight on the day following #if (${identity.endDate}) ${identity.endDate}#end.</p>
 
 #set($NermEndDateUrl="https://healthnz.nonemployee.com/neprofile_dashboard/workflows/1b57f633-fcd7-4b62-bfc0-75d98865f721/workflow_sessions/new?pid=" + $nermId)
 #set($KapehuKnowledgeArticleUrl="https://support.tewhatuora.govt.nz/now/nav/ui/classic/params/target/%24knowledge.do")
 
-<p>If this end date is incorrect, please update it on <strong><a href=$NermEndDateUrl target="_blank" rel="noopener noreferrer">[NERM update end date]</a></strong>. A guide to updating an end date and offboarding can be found at: <strong><a href=$KapehuKnowledgeArticleUrl target="_blank" rel="noopener noreferrer">[Kapehu knowledge article]</a></strong>.</p>
+<p>If this end date is incorrect, please update it on <strong><a href=$NermEndDateUrl target="_blank" rel="noopener noreferrer">[Sailpoint update end date]</a></strong>. A guide to updating an end date and offboarding can be found at: <strong><a href=$KapehuKnowledgeArticleUrl target="_blank" rel="noopener noreferrer">[Kapehu knowledge article]</a></strong>.</p>
 <ul>
 <li>HR and Payroll are informed, if required. The national process is set out on askHR's resignation page.</li>
 <li>Return of IT devices and access cards has been requested, if required.</li>
