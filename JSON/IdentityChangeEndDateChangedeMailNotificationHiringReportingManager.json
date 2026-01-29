@@ -1,0 +1,165 @@
+{
+	"name": "Identity Change (EndDate Changed) eMail Notification (Hiring & Reporting Manager)",
+	"description": "If Until End Date has changed then upcoming offboarding email is sent to Hiring & Reporting Manager.",
+	"modified": "2026-01-29T00:44:13.779474615Z",
+	"modifiedBy": {
+		"type": "IDENTITY",
+		"id": "49a63e0fea0b4c3b873863e951208e13",
+		"name": "jeremy.driessen.admin"
+	},
+	"definition": {
+		"start": "Compare Strings",
+		"steps": {
+			"Compare Strings": {
+				"actionId": "sp:compare-strings",
+				"choiceList": [
+					{
+						"comparator": "StringContains",
+						"nextStep": "End Step - Success",
+						"variableA.$": "$.trigger.identity.name",
+						"variableB": "@"
+					}
+				],
+				"defaultStep": "Wait",
+				"description": null,
+				"displayName": "Ignore HR AD records",
+				"type": "choice"
+			},
+			"Compare Strings 1": {
+				"actionId": "sp:compare-strings",
+				"choiceList": [
+					{
+						"comparator": "StringEquals",
+						"nextStep": "End Step - Success",
+						"variableA.$": "$.getIdentity.attributes.employeeType",
+						"variableB": "Permanent"
+					}
+				],
+				"defaultStep": "Get Accounts",
+				"displayName": "Is Permanent EmploymentType?",
+				"type": "choice"
+			},
+			"Define Variable": {
+				"actionId": "sp:define-variable",
+				"attributes": {
+					"id": "sp:define-variable",
+					"variables": [
+						{
+							"description": "",
+							"name": "emailRecipients",
+							"transforms": [
+								{
+									"id": "sp:transform:concatenate:string",
+									"input": {
+										"variableB": "\"{{$.getIdentity.attributes.hiringManagerEmail}}\""
+									}
+								},
+								{
+									"id": "sp:transform:concatenate:string",
+									"input": {
+										"variableB": ",\"{{$.getIdentity.attributes.reportingManagerEmail}}\""
+									}
+								},
+								{
+									"id": "sp:transform:concatenate:string",
+									"input": {
+										"variableB": "]"
+									}
+								},
+								{
+									"id": "sp:transform:replace:string",
+									"input": {
+										"pattern": ",\\\"\\\"",
+										"replacement": ""
+									}
+								},
+								{
+									"id": "sp:transform:replace:string",
+									"input": {
+										"pattern": "\\\"\\\",",
+										"replacement": ""
+									}
+								}
+							],
+							"variableA": "["
+						}
+					]
+				},
+				"displayName": "",
+				"nextStep": "Send Email",
+				"type": "Mutation"
+			},
+			"End Step - Success": {
+				"actionId": "sp:operator-success",
+				"displayName": "",
+				"type": "success"
+			},
+			"Get Accounts": {
+				"actionId": "sp:get-accounts",
+				"attributes": {
+					"filterCriteria": null,
+					"getAccountsBy": "specificIdentity",
+					"identity.$": "$.getIdentity.id"
+				},
+				"displayName": "",
+				"nextStep": "Define Variable",
+				"type": "action",
+				"versionNumber": 1
+			},
+			"Get Identity": {
+				"actionId": "sp:get-identity",
+				"attributes": {
+					"id.$": "$.trigger.identity.id"
+				},
+				"description": null,
+				"displayName": "",
+				"nextStep": "Compare Strings 1",
+				"type": "action",
+				"versionNumber": 2
+			},
+			"Send Email": {
+				"actionId": "sp:send-email",
+				"attributes": {
+					"body": "<p><img src=\"blob:https://preprod.iga.identity.healthnz.govt.nz/615f488d-5dad-4c2b-84ec-53b119e23437\"></p>\n<div style=\"width: 902px;\">\n<p>Kia ora,</p>\n<p>The end date for #if (${identity.firstName}) ${identity.firstName}#end #if (${identity.lastname}) ${identity.lastname}#end has been updated to currently #if (${identity.endDate}) ${identity.endDate}#end. Access to all Health NZ IT systems will be removed at midnight on the day following #if (${identity.endDate}) ${identity.endDate}#end.</p>\n#set($NermEndDateUrl=\"https://healthnz.nonemployee.com/neprofile_dashboard/workflows/1b57f633-fcd7-4b62-bfc0-75d98865f721/workflow_sessions/new?pid=\" + $nermId)#set($KapehuKnowledgeArticleUrl=\"https://support.tewhatuora.govt.nz/now/nav/ui/classic/params/target/%24knowledge.do\")#set($ResignationUrl=\"https://hauoraaotearoa.sharepoint.com/sites/MyHR/SitePages/Resignation.aspx?web=1\")\n<p>If this end date is incorrect, please update it on <strong><a href=\"$NermEndDateUrl\" target=\"_blank\" rel=\"noopener noreferrer\">[Sailpoint update end date]</a></strong>. A guide to updating an end date and offboarding can be found at: <strong><a href=\"$KapehuKnowledgeArticleUrl\" target=\"_blank\" rel=\"noopener noreferrer\">[Kapehu knowledge article]</a></strong>.</p>\n<ul>\n<li>HR and Payroll are informed, if required. The national process is set out on <strong><a href=\"$ResignationUrl\" target=\"_blank\" rel=\"noopener noreferrer\">askHR's resignation page</a></strong>.</li>\n<li>Return of IT devices and access cards has been requested, if required. \"The national request can be raised on Kapehu. Select your district in <strong>\"Services by District\"</strong> for your local request.</li>\n</ul>\n<p>If #if (${identity.firstName}) ${identity.firstName}#end #if (${identity.lastname}) ${identity.lastname}#end is leaving on the #if (${identity.endDate}) ${identity.endDate}#end please ensure:<br>Full details for #if (${identity.firstname}) ${identity.firstname}#end, provided to ensure correct identification of the person.</p>\n<table style=\"width: 69.1796%; border-collapse: collapse; border: 0.5px solid black; height: 434.4px;\">\n<thead>\n<tr>\n<th style=\"width: 37.3926%; text-align: left; border: 0.5px solid black;\">Field</th>\n<th style=\"width: 62.6075%; text-align: left; border: 0.5px solid black;\">Detail</th>\n</tr>\n</thead>\n<tbody>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>First Name</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.firstname}) ${identity.firstname}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>Preferred name</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.preferredName}) ${identity.preferredName}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>Last Name</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.lastname}) ${identity.lastname}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>District</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.district}) ${identity.district}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>Entity</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.entity}) ${identity.entity}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>Department</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.department}) ${identity.department}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>Job Title</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.jobTitle}) ${identity.jobTitle}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>Primary location</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.location}) ${identity.location}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>Employee Type</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.employeeType}) ${identity.employeeType}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>eMail</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.email}) ${identity.email}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>Employee ID</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.identificationNumber}) ${identity.identificationNumber}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>Health Practitioner's Index/Common Person Number</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.commonPersonNumber}) ${identity.commonPersonNumber}#end</td>\n</tr>\n<tr style=\"height: 36.2px;\">\n<td style=\"width: 37.3926%; border: 0.5px solid black;\"><em>Medical Council Number</em></td>\n<td style=\"width: 62.6075%; border: 0.5px solid black;\">#if (${identity.medicalCouncilNumber}) ${identity.medicalCouncilNumber}#end</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n</div>\n<p>If you require and help go to&nbsp;<a href=\"https://support.tewhatuora.govt.nz/esc?id=emp_taxonomy_topic&amp;topic_id=58b3b0d91b450610d6102069b04bcb20\" target=\"_blank\" rel=\"noopener noreferrer\">Kāpehu (ServiceNow)</a> and raise a support request.</p>\n<p><span lang=\"EN-NZ\" style=\"font-size: 11.0pt; line-height: 107%; font-family: Poppins; mso-fareast-font-family: 'Times New Roman'; mso-ansi-language: EN-NZ; mso-fareast-language: EN-US; mso-bidi-language: AR-SA;\">Ngā mihi,&nbsp;<br>IT Service Desk&nbsp;<br>Service Experience&nbsp;<br>Digital Services</span></p>\n<p><img src=\"blob:https://preprod.iga.identity.healthnz.govt.nz/43551433-583c-42f0-8041-76a37b5bf15e\"></p>",
+					"context": {
+						"identity.$": "$.getIdentity.attributes",
+						"nermId.$": "$.getAccounts.accounts[?(@.sourceId=='09c8bc3b37604654a0d4650784bf8e7f')].attributes.id"
+					},
+					"from": null,
+					"recipientEmailList.$": "$.defineVariable.emailRecipients",
+					"replyTo": "",
+					"subject": "IT Access end date updated for #if (${identity.endDate}) ${identity.endDate}#end for #if (${identity.firstname}) ${identity.firstname}#end #if (${identity.lastname}) ${identity.lastname}#end"
+				},
+				"description": null,
+				"displayName": "",
+				"nextStep": "End Step - Success",
+				"type": "action",
+				"versionNumber": 2
+			},
+			"Wait": {
+				"actionId": "sp:sleep",
+				"attributes": {
+					"duration": "5m",
+					"type": "waitFor"
+				},
+				"description": null,
+				"displayName": "",
+				"nextStep": "Get Identity",
+				"type": "action",
+				"versionNumber": 1
+			}
+		}
+	},
+	"creator": {
+		"type": "IDENTITY",
+		"id": "49a63e0fea0b4c3b873863e951208e13",
+		"name": "jeremy.driessen.admin"
+	},
+	"trigger": {
+		"type": "EVENT",
+		"attributes": {
+			"filter.$": "$.changes[?(@.attribute == \"endDate\" && (!(@.newValue ==  @.newValue)))]",
+			"id": "idn:identity-attributes-changed"
+		}
+	}
+}
