@@ -52,6 +52,18 @@
 <td style="width: 37.3926%; border: 0.5px solid black;"><em>eMail</em></td>
 <td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.email}) ${identity.email}#end</td>
 </tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>Employee ID</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.identificationNumber}) ${identity.identificationNumber}#end</td>
+</tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>HPI/CPN</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.commonPersonNumber}) ${identity.commonPersonNumber}#end</td>
+</tr>
+<tr style="height: 36.2px;">
+<td style="width: 37.3926%; border: 0.5px solid black;"><em>Medical Council Number</em></td>
+<td style="width: 62.6075%; border: 0.5px solid black;">#if (${identity.medicalCouncilNumber}) ${identity.medicalCouncilNumber}#end</td>
+</tr>
 </tbody>
 </table>
 <p><strong><em>Please note</em>: </strong>#if (${identity.firstname}) ${identity.firstname}#end #if (${identity.lastname}) ${identity.lastname}#end only needs access to Health NZ buildings or property you don&rsquo;t need to forward this email to them, simply tell them the details to collect their access card.</p>
