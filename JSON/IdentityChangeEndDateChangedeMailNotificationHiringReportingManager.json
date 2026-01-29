@@ -158,7 +158,7 @@
 	"trigger": {
 		"type": "EVENT",
 		"attributes": {
-			"filter.$": "$.changes[?(@.attribute == \"endDate\" && (!(@.newValue ==  @.newValue)))]",
+			"filter.$": "$.changes[?(@.attribute == \"endDate\" && (!(@.oldValue ==  @.newValue)))]",
 			"id": "idn:identity-attributes-changed"
 		}
 	}
