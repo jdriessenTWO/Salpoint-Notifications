@@ -892,7 +892,7 @@ try {
 
         #$csvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\South Canterbury - person - initial.csv"
         #$errorcsvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\Error files\person-error.csv"
-        $errorcsvFilePath = "$($defaultlocalpath)\$($districtname)\Error\$($errorlocationname)-permitted-error.csv"
+        $errorcsvFilePath = "$($defaultlocalpath)\$($districtname)\Error\$($errorlocationname)-error_$ddate .csv"
         
         Process-PersonCSV -csvFilePath $csvFilePath -url $url -bearerToken $bearerToken -errorcsvFilePath $errorcsvFilePath
         }
