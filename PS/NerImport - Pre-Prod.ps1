@@ -20,6 +20,7 @@ $districtUrl = "$($apiUrl)/api/profiles?profile_type_id=$districtProfileId&name=
 $districtname="Waikato"
 $defaultlocalpath="C:\Scripts\HomeDrive"
 $errorPath = "$($defaultlocalpath)"
+$ddate = get-date -format "dd-MM-HHmm"
 
 Function mgPromptforCSV 
 {
@@ -880,18 +881,28 @@ try {
         #> 
     
         Write-Host "Selected upload NERM Person records"
+        $errorlocationname = "person"
         $global:persons = Get-AllProfiles -ProfileTypeId $personProfileId -bearerToken $bearerToken
-        $csvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\South Canterbury - person - initial.csv"
-        $errorcsvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\Error files\person-error.csv"
+
+        $csvFilePath=mgPromptforCSV -DTitle "Selected upload Person Records" -ScreenTxt "Selected upload Person Records (Dialog)" -FPath $($defaultlocalpath)\$($districtname) -dfilter "CSV files (*.CSV)|*.CSV|All files (*.*)|*.*"
+        if( $csvFilePath -eq "*.csv") {
+            write-host "Invalid or no CSV file selected" -ForegroundColor Yellow
+            exit
+        }
+
+        #$csvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\South Canterbury - person - initial.csv"
+        #$errorcsvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\Error files\person-error.csv"
+        $errorcsvFilePath = "$($defaultlocalpath)\$($districtname)\Error\$($errorlocationname)-permitted-error.csv"
         
         Process-PersonCSV -csvFilePath $csvFilePath -url $url -bearerToken $bearerToken -errorcsvFilePath $errorcsvFilePath
         }
         2 {
         <#
             Add Roles to a Person Profile
-        #> 
-        
+        #>
+
         Write-Host "Selected upload NERM Roles records"
+        $errorlocationname = "roles"
 
         Write-Host "Starting load of all Data"
         Write-Host "positions"
@@ -916,53 +927,65 @@ try {
         $global:users = Get-AllUsers -bearerToken $bearerToken #>
         Write-Host "Done"
 
-        $csvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\Error files\roles2-error.csv"
-        $errorcsvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\Error files\roles3-error.csv"
+        $csvFilePath=mgPromptforCSV -DTitle "Selected upload Nerm Roles" -ScreenTxt "Selected upload Nerm Roles (Dialog)" -FPath $($defaultlocalpath)\$($districtname) -dfilter "CSV files (*.CSV)|*.CSV|All files (*.*)|*.*"
+        if( $csvFilePath -eq "*.csv") {
+            write-host "Invalid or no CSV file selected" -ForegroundColor Yellow
+            exit
+        }
+
+        #$csvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\Error files\roles2-error.csv"
+        #$errorcsvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\Error files\roles3-error.csv"
+        $errorcsvFilePath = "$($defaultlocalpath)\$($districtname)\Error\$($errorlocationname)-error_$ddate .csv"
 
         Process-PersonCSV -csvFilePath $csvFilePath -url $url -bearerToken $bearerToken -errorcsvFilePath $errorcsvFilePath
         }
         3 {
         <#
             To add permitted values to a district, Update the below csvFilePath for each permitted Values
-        #> 
+        #>
         Write-Host "Select Object Type"
         Write-Host "1. Departments"
         Write-Host "2. Locations"
         Write-Host "3. Position Titles"
         Write-Host "4. Entity"
         Write-Host "5. Employment_type"
-        
+
         $Choice = Read-Host "Enter the number of your choice (1-5)"
 
         switch ($Choice)
     {
         1 {
             Write-Host "departments"
+            $errorlocationname="departments"
             $global:departments = Get-AllProfiles -ProfileTypeId $departmentProfileId -bearerToken $bearerToken
             Write-Host "Districts"
             $global:Districts = Get-AllProfiles -ProfileTypeId $districtProfileId -bearerToken $bearerToken
         }
-        
+
         2{
             Write-Host "Locations"
+            $errorlocationname="locations"
             $global:Locations = Get-AllProfiles -ProfileTypeId $locationProfileId -bearerToken $bearerToken
             Write-Host "Districts"
             $global:Districts = Get-AllProfiles -ProfileTypeId $districtProfileId -bearerToken $bearerToken
         }
         3{
             Write-Host "positions"
+            $errorlocationname="position titles"
             $global:positions = Get-AllProfiles -ProfileTypeId $positionTitleProfileId -bearerToken $bearerToken
             Write-Host "Districts"
             $global:Districts = Get-AllProfiles -ProfileTypeId $districtProfileId -bearerToken $bearerToken
         }
         4{
             Write-Host "Entity"
+            $errorlocationname="entities"
             $global:Entity = Get-AllProfiles -ProfileTypeId $entityProfileId -bearerToken $bearerToken
             Write-Host "Districts"
             $global:Districts = Get-AllProfiles -ProfileTypeId $districtProfileId -bearerToken $bearerToken
         }
         5{
             Write-Host "employment_type"
+            $errorlocationname="employment types"
             $global:employeeType = Get-AllProfiles -ProfileTypeId $employeeTypeProfileId -bearerToken $bearerToken
             Write-Host "Districts"
             $global:Districts = Get-AllProfiles -ProfileTypeId $districtProfileId -bearerToken $bearerToken
@@ -970,9 +993,15 @@ try {
     }
 
         Write-Host "Selected upload Nerm Permitted Values"
-        $csvFilePath = "C:\Users\kanwaldhanoa\Downloads\NelsonMarlborough\Nelson Marlborough\Nelson Marlborough - position title - permitted values - update take 2.csv"
-        $errorcsvFilePath = "C:\Users\kanwaldhanoa\Downloads\NelsonMarlborough\Nelson Marlborough\Error\position title-permitted-error.csv"
-        
+
+        $csvFilePath=mgPromptforCSV -DTitle "Selected upload Nerm Permitted Values" -ScreenTxt "Selected upload Nerm Permitted Values File (Dialog)" -FPath $($defaultlocalpath)\$($districtname) -dfilter "CSV files (*.CSV)|*.CSV|All files (*.*)|*.*"
+        if( $csvFilePath -eq "*.csv") {
+            write-host "Invalid or no CSV file selected" -ForegroundColor Yellow
+            exit
+        }
+
+        #$csvFilePath = "$($defaultlocalpath)\NelsonMarlborough\Nelson Marlborough\Nelson Marlborough - position title - permitted values - update take 2.csv"
+        $errorcsvFilePath = "$($defaultlocalpath)\$($districtname)\Error\$($errorlocationname)-permitted-error_$ddate .csv"
         Process-CsvFile -csvFilePath $csvFilePath -url $districtUrl -locationProfileId $locationProfileId -departmentProfileId $departmentProfileId -entityProfileId $entityProfileId -positionTitleProfileId $positionTitleProfileId -bearerToken $bearerToken -errorcsvFilePath $errorcsvFilePath
         }
         Default {"Invalid entry, try again"}
