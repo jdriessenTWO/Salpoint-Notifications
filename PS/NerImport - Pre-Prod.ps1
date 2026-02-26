@@ -17,6 +17,59 @@ $organisationProfileId = "45c0e96b-5d1d-4dc7-a89d-1df62a4b74f7"
 
 $districtUrl = "$($apiUrl)/api/profiles?profile_type_id=$districtProfileId&name="
 
+$districtname="Waikato"
+$defaultlocalpath="C:\Scripts\HomeDrive"
+$errorPath = "$($defaultlocalpath)"
+
+Function mgPromptforCSV 
+{
+   [CmdletBinding()]
+   param(
+   [Parameter(Mandatory=$FALSE)]
+   [string]$DTitle="Select CSV file",
+   [Parameter(Mandatory=$FALSE)]
+   [string]$DFilter="CSV Files(*.CSV)|*.CSV|All files (*.*)|*.*",
+   [Parameter(Mandatory=$FALSE)]
+   [String]$DFileWildCard="*.csv",
+   [Parameter(Mandatory=$FALSE)]
+   [String]$FPath="",
+   [Parameter(Mandatory=$FALSE)]
+   [String]$ScreenTxt="Select CSV file (Dialog box)"
+   )
+
+   # Usage
+   #
+   <#
+        $DFileWildCard ="*_vusers.csv"
+        $csvfile=mgPromptforCSV -DFilter "User|*vusers.csv|All files (*.*)|*.*" -DFileWildCard $DFileWildCard
+        if( $DFileWildCard -eq $csvfile ) {exit}else {$mailboxes=Import-Csv $csvfile }
+   #>
+
+   #file open dialog
+   add-type -AssemblyName system.windows.forms
+   $openFileDialog = New-Object windows.forms.openfiledialog
+
+   if( $FPath -ne "")
+   {
+        $openFileDialog.initialDirectory = $FPath
+   }
+   else
+   {
+        $openFileDialog.initialDirectory = $defaultpath #[System.IO.Directory]::GetCurrentDirectory()
+   }
+
+   $openFileDialog.title = $DTitle
+   $openFileDialog.filter =  $DFilter
+   $openFileDialog.FileName= $DFileWildCard
+   $openFileDialog.ShowHelp = $True
+   write-host $ScreenTxt -ForegroundColor Green
+   $result = $openFileDialog.ShowDialog()   # Display the Dialog / Wait for user response
+   # in ISE you may have to alt-tab or minimize ISE to see dialog box
+   write-host CSV Selected: $openFileDialog.filename
+   return $openFileDialog.filename 
+}
+
+
 function Get-AllUsers {
     param (
         [string]$bearerToken
