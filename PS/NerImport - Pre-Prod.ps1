@@ -1,9 +1,9 @@
 # PowerShell script for NERM bulk profile import
 
 # Define API Endpoint and Token
-$apiUrl = "https://healthnz.nonemployee.com"
+$apiUrl = "https://healthnz-preprod.nonemployee.com"
 $bearerToken = "ne-OkHpQPLBqUopXoO6Gj2cLwLfLoJQ49IpkYLxRNkyAOhzOYwcub4YwG6Jxrl95Zk1IinH32UKofWQGLu7JyIEdDTKpp5uDu5whuHYlhDE3xDTWheAeeIdegRpsheubbRZ"
-$url = "https://healthnz.nonemployee.com/api/profiles?name="
+$url = "https://healthnz-preprod.nonemployee.com/api/profiles?name="
 
 $districtProfileId = "ef6fcd3d-f575-4b3d-bc5e-9ea9853e7e46"
 $locationProfileId = "9dc6ee50-40c7-4389-a1b7-7c6f6edbdbb3"
@@ -15,7 +15,7 @@ $personProfileId = "e1ea7701-d8e3-4b4b-887e-775f3dcb5712"
 $rolesProfileId = "4406799e-9e6b-4c68-a0de-fc1ef5986992"
 $organisationProfileId = "45c0e96b-5d1d-4dc7-a89d-1df62a4b74f7"
 
-$districtUrl = "https://healthnz.nonemployee.com/api/profiles?profile_type_id=$districtProfileId&name="
+$districtUrl = "$($apiUrl)/api/profiles?profile_type_id=$districtProfileId&name="
 
 function Get-AllUsers {
     param (
@@ -28,7 +28,7 @@ function Get-AllUsers {
     # Fetch all users with metadata
     $userCache = @()
     $userOffset = 0
-    $nextUrl = "https://healthnz.nonemployee.com/api/users?limit=$limit&offset=$userOffset&metadata=true"   
+    $nextUrl = "$($apiUrl)/api/users?limit=$limit&offset=$userOffset&metadata=true"   
 
     $Headers = @{
         "Authorization" = "Bearer $bearerToken"  # If authentication is required
@@ -57,7 +57,7 @@ function Get-AllUsers {
        
         # Get the next page URL if available
         if ($results.count -lt $userResponse._metadata.total) {
-            $nextUrl = "https://healthnz.nonemployee.com/api$($userResponse._metadata.next)&metadata=true"
+            $nextUrl = "$($apiUrl)/api$($userResponse._metadata.next)&metadata=true"
             Write-Host "Fetching next page: $nextUrl"
         } else {
             $nextUrl = $null
@@ -296,7 +296,7 @@ function Process-PersonCSV {
                                                -profileName $profileName -attributesMap $attributesMap
 # Write-host "2211111122"
             # Send POST request
-            $apiUrl = "https://healthnz.nonemployee.com/api/profile"
+            $apiUrl = "$($apiUrl)/api/profile"
             $postResponse = Post-Request -url $apiUrl -bearerToken $bearerToken -jsonInputString $profileObj
             $postResponse
 # Write-host "2224444444444442"
@@ -422,7 +422,7 @@ function Create-AttributesMap {
                     $foundData = $employeeType | Where-Object { $_.Name -eq $value}
                     $attributesMap[$header] = $foundData.id 
                 }else{
-                    $url = "https://healthnz.nonemployee.com/api/profiles?name="
+                    $url = "$($apiUrl)/api/profiles?name="
                     try {
                         $responseProfileName = $null
                         $responseStatusCode = 0
@@ -727,7 +727,7 @@ function Process-CsvFile {
     } | ConvertTo-Json 
 
     Write-Host "jsonPayload: $jsonPayload"
-    $url = "https://healthnz.nonemployee.com/api/profiles/$profileId"
+    $url = "$($apiUrl)/api/profiles/$profileId"
     # Call patch
 
     Patch-Request "$url" $bearerToken $jsonPayload
@@ -766,7 +766,7 @@ function Process-SubOrgCsvFile {
             $patchData = @{ profile = @{ attributes = @{ "entity_ps" = $subOrgId } } } | ConvertTo-Json -Depth 10
             
             Write-Host "Updating profile ID: $profileId with entity_ps ID $subOrgId"
-            Patch-Request -url "https://healthnz.nonemployee.com/api/profiles/$profileId" -jsonInputString $patchData
+            Patch-Request -url "$($apiUrl)/api/profiles/$profileId" -jsonInputString $patchData
         }
     }
 }
