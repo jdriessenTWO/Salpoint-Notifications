@@ -19,6 +19,7 @@ $districtUrl = "$($apiUrl)/api/profiles?profile_type_id=$districtProfileId&name=
 
 $districtname="Waikato"
 $defaultlocalpath="C:\Scripts\HomeDrive"
+$baselocationpath = "C:\Scripts"
 $errorPath = "$($defaultlocalpath)"
 $ddate = get-date -format "dd-MM-HHmm"
 
@@ -374,8 +375,8 @@ function Process-PersonCSV {
 function Get-ProfileTypeId {
     param ($profileType)
     switch ($profileType.ToLower()) {
-        "person" { return "e1ea7701-d8e3-4b4b-887e-775f3dcb5712" }
-        "roles" { return "4406799e-9e6b-4c68-a0de-fc1ef5986992" }
+        "person" { return "e1ea7701-d8e3-4b4b-887e-775f3dcb5712" } #Fix: Chnage to PersonProfileID variable
+        "roles" { return "4406799e-9e6b-4c68-a0de-fc1ef5986992" } #Fix: Chnage to RoleProfileID variable
         default { return $null }
     }
 }
@@ -857,18 +858,47 @@ function Post-Request {
     }
 }
 
+# if the location exists if not creates it
+function validateCurrentLocation {
+    param (
+        [string]$location
+    )
+
+    if(Test-Path -Path $currentlocation -PathType Container)
+    {
+        Write-Host "Path: $($currentlocation) Exists"
+    }
+    else
+    {
+        New-Item -Path $currentlocation -ItemType Directory -Force
+        Write-Host "Creating Path: $($currentlocation)"
+        if(Test-Path -Path $currentlocation -PathType Container){
+            Write-Host "Path: $($currentlocation) Created"
+        }
+        else {
+            Write-Host "Failed to Create Path: $($currentlocation)"
+        }
+    }
+
+}
+
 
 # Main logic
 
 Write-Host "********url******* $url"
 Write-Host "********districtUrl******* $districtUrl"
 
+$currentlocation = "$($baselocationpath)\$($districtname)"
+
 try {
+
+    validateCurrentLocation($currentlocation)
+
     Write-Host "Select Object Type"
     Write-Host "1. NERM Person Records"
     Write-Host "2. NERM Role Records"
     Write-Host "3. Nerm Permitted Values"
-    
+
     $input = Read-Host "Enter the number of your choice (1-3)"
 
     $response = Authenticate-With-BearerToken -apiUrl $apiUrl -bearerToken $bearerToken
@@ -878,13 +908,13 @@ try {
         1 {
         <#
             Add a Person's Profile to Nerm
-        #> 
-    
+        #>
+
         Write-Host "Selected upload NERM Person records"
         $errorlocationname = "person"
         $global:persons = Get-AllProfiles -ProfileTypeId $personProfileId -bearerToken $bearerToken
 
-        $csvFilePath=mgPromptforCSV -DTitle "Selected upload Person Records" -ScreenTxt "Selected upload Person Records (Dialog)" -FPath $($defaultlocalpath)\$($districtname) -dfilter "CSV files (*.CSV)|*.CSV|All files (*.*)|*.*"
+        $csvFilePath=mgPromptforCSV -DTitle "Selected upload Person Records" -ScreenTxt "Selected upload Person Records (Dialog)" -FPath $($currentlocation) -dfilter "CSV files (*.CSV)|*.CSV|All files (*.*)|*.*"
         if( $csvFilePath -eq "*.csv") {
             write-host "Invalid or no CSV file selected" -ForegroundColor Yellow
             exit
@@ -892,7 +922,10 @@ try {
 
         #$csvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\South Canterbury - person - initial.csv"
         #$errorcsvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\Error files\person-error.csv"
-        $errorcsvFilePath = "$($defaultlocalpath)\$($districtname)\Error\$($errorlocationname)-error_$ddate .csv"
+
+        Write-Host "Current Location: "
+
+        $errorcsvFilePath = "$($currentlocation)\Error\$($errorlocationname)-error_$ddate .csv"
         
         Process-PersonCSV -csvFilePath $csvFilePath -url $url -bearerToken $bearerToken -errorcsvFilePath $errorcsvFilePath
         }
@@ -927,7 +960,7 @@ try {
         $global:users = Get-AllUsers -bearerToken $bearerToken #>
         Write-Host "Done"
 
-        $csvFilePath=mgPromptforCSV -DTitle "Selected upload Nerm Roles" -ScreenTxt "Selected upload Nerm Roles (Dialog)" -FPath $($defaultlocalpath)\$($districtname) -dfilter "CSV files (*.CSV)|*.CSV|All files (*.*)|*.*"
+        $csvFilePath=mgPromptforCSV -DTitle "Selected upload Nerm Roles" -ScreenTxt "Selected upload Nerm Roles (Dialog)" -FPath $($currentlocation) -dfilter "CSV files (*.CSV)|*.CSV|All files (*.*)|*.*"
         if( $csvFilePath -eq "*.csv") {
             write-host "Invalid or no CSV file selected" -ForegroundColor Yellow
             exit
@@ -935,7 +968,7 @@ try {
 
         #$csvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\Error files\roles2-error.csv"
         #$errorcsvFilePath = "C:\Users\kanwaldhanoa\Downloads\South Canterbury - Data Load\South Canterbury - initial load\Error files\roles3-error.csv"
-        $errorcsvFilePath = "$($defaultlocalpath)\$($districtname)\Error\$($errorlocationname)-error_$ddate .csv"
+        $errorcsvFilePath = "$($currentlocation)\Error\$($errorlocationname)-error_$ddate .csv"
 
         Process-PersonCSV -csvFilePath $csvFilePath -url $url -bearerToken $bearerToken -errorcsvFilePath $errorcsvFilePath
         }
@@ -1001,7 +1034,7 @@ try {
         }
 
         #$csvFilePath = "$($defaultlocalpath)\NelsonMarlborough\Nelson Marlborough\Nelson Marlborough - position title - permitted values - update take 2.csv"
-        $errorcsvFilePath = "$($defaultlocalpath)\$($districtname)\Error\$($errorlocationname)-permitted-error_$ddate .csv"
+        $errorcsvFilePath = "$($currentlocation)\Error\$($errorlocationname)-permitted-error_$ddate .csv"
         Process-CsvFile -csvFilePath $csvFilePath -url $districtUrl -locationProfileId $locationProfileId -departmentProfileId $departmentProfileId -entityProfileId $entityProfileId -positionTitleProfileId $positionTitleProfileId -bearerToken $bearerToken -errorcsvFilePath $errorcsvFilePath
         }
         Default {"Invalid entry, try again"}
