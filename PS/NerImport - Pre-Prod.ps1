@@ -2,7 +2,7 @@
 
 # Define API Endpoint and Token
 $apiUrl = "https://healthnz-preprod.nonemployee.com"
-$bearerToken = "ne-OkHpQPLBqUopXoO6Gj2cLwLfLoJQ49IpkYLxRNkyAOhzOYwcub4YwG6Jxrl95Zk1IinH32UKofWQGLu7JyIEdDTKpp5uDu5whuHYlhDE3xDTWheAeeIdegRpsheubbRZ"
+$bearerToken = "ne-njGoLKernIB7KLaNefoTT26BkC4aEPlNt6Qv7eU9DEFmKYDbbhnnfxq0szL9Z5OG4YRCgHRiWZRXk8tCuAiPcy52tn2kFUEFH0qzNwfE6Sc2hEvwcCN49uwS4Ca2aQVW"
 $url = "https://healthnz-preprod.nonemployee.com/api/profiles?name="
 
 $districtProfileId = "ef6fcd3d-f575-4b3d-bc5e-9ea9853e7e46"
