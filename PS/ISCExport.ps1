@@ -2,16 +2,21 @@
 #ISC Person/Roles Extract
 ############################################################################
 #
+# JD - 04/03/2026 - Added District and Date variable to build file names
 #
-#
-############################################################################ 
+############################################################################
 
 cls
 Import-Module ImportExcel
 
+Write-Host "ISC Person/Roles Extract"
+
 # Define the API endpoint and headers
 $baseUrl = "https://healthnz.api.identitynow.com"
-$filePath = "C:\scripts\Waikato"
+$filePath = "C:\scripts"
+$district = "Waikato"
+
+$ddate = get-date -format "dd-MM-HHmm"
 
 # Define the token endpoint URL
 $tokenEndpoint = "$($baseUrl)/oauth/token"
@@ -41,7 +46,9 @@ $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "Bearer $accessToken")
 $headers.Add("Content-Type", "application/json")
 
-$source = 'identityProfile.name:"Waikato"'
+$source = 'identityProfile.name:"$($district)"'
+
+Write-Host $source
 
 # Define the search payload (adjust as needed)
  $searchBody = @{
@@ -181,8 +188,8 @@ Write-Host "Total identities fetched: $($identitiesArray.Count)"
 
     }
 
-    $personPath = "$filePath\Waikato-person.csv"
-    $rolesPath = "$filePath\Waikato-roles.csv"
+    $personPath = "$filePath\$($district)-person_$($ddate).csv"
+    $rolesPath = "$filePath\$($district)-roles_$($ddate).csv"
     # Out-File -InputObject $roleArrayTest -FilePath $rolesPath
     $personArray | Export-Csv -Path $personPath -NoTypeInformation
     $roleArray | Export-Csv -Path $rolesPath -NoTypeInformation
