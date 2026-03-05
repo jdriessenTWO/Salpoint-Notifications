@@ -3,9 +3,33 @@
 ############################################################################
 #
 # JD - 04/03/2026 - Added District and Date variable to build file names
+# JD - 05/03/2026 - Added Variable error logging and District to fie name
 #
 ############################################################################
+function validateCurrentLocation {
+    param (
+        [string]$location
+    )
 
+    if(Test-Path -Path $location -PathType Container)
+    {
+        Write-Host "Path: $($location) Exists"
+    }
+    else
+    {
+        New-Item -Path $location -ItemType Directory -Force
+        Write-Host "Creating Path: $($location)"
+        if(Test-Path -Path $location -PathType Container){
+            Write-Host "Path: $($location) Created"
+        }
+        else {
+            Write-Host "Failed to Create Path: $($location)"
+        }
+    }
+
+}
+
+# main script
 cls
 Import-Module ImportExcel
 
@@ -13,10 +37,20 @@ Write-Host "ISC Person/Roles Extract"
 
 # Define the API endpoint and headers
 $baseUrl = "https://healthnz.api.identitynow.com"
-$filePath = "C:\scripts"
 $district = "Waikato"
-
 $ddate = get-date -format "dd-MM-HHmm"
+
+$filePath = "C:\scripts\$($district)"
+$errorLogPath = "$($filePath)\Logs"
+
+$errorLogfile = "$($errorLogPath)\Waikato_Log_$($ddate).csv"
+
+validateCurrentLocation($filePath)
+validateCurrentLocation($errorLogPath)
+
+Start-Transcript -Path $errorLogfile
+
+Write-Host "Start: $(get-date -format "dd-MM-HHmm")"
 
 # Define the token endpoint URL
 $tokenEndpoint = "$($baseUrl)/oauth/token"
@@ -46,7 +80,7 @@ $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "Bearer $accessToken")
 $headers.Add("Content-Type", "application/json")
 
-$source = 'identityProfile.name:"$($district)"'
+$source = 'identityProfile.name:"'+$($district) +'"'
 
 Write-Host $source
 
@@ -193,3 +227,7 @@ Write-Host "Total identities fetched: $($identitiesArray.Count)"
     # Out-File -InputObject $roleArrayTest -FilePath $rolesPath
     $personArray | Export-Csv -Path $personPath -NoTypeInformation
     $roleArray | Export-Csv -Path $rolesPath -NoTypeInformation
+    
+    Write-Host "Ended: $(get-date -format "dd-MM-HHmm")"
+
+    Stop-Transcript
